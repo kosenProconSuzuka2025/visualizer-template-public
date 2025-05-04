@@ -101,14 +101,18 @@ pub fn group(title: String) -> Group {
     Group::new().add(Title::new(title))
 }
 
-fn calculate_score(input: &Input, output: &Output) -> i64 {
-    0
+fn calculate_score(board: Vec<Vec<usize>>) -> usize {
+    let mut score = 0;
+    
+    score
 }
 
 pub fn vis(input: &Input, output: &Output, turn: usize) -> (i64, String, String) {
-    let score = calculate_score(input, output);
     let mut b = input.board.clone();
+    let mut c = b.clone();
     let out = &output.out;
+
+    let mut err = String::new();
 
     let D = 50;
     let W = D * input.size;
@@ -124,6 +128,33 @@ pub fn vis(input: &Input, output: &Output, turn: usize) -> (i64, String, String)
         "text {{text-anchor: middle;dominant-baseline: central; font-size: {}}}",
         6
     )));
+
+    let mut flag = false;
+    for i in 0..turn {
+        let (j, k, n) = out[i];
+        if j + n > input.size && k + n > input.size {
+            // errorとして
+            err += format!("Out of range: ({}, {}, {})\n",i, j, k).as_str();
+            flag = true;
+            break;
+        }
+        for x in 0..n {
+            for y in 0..n {
+                let xi: usize = j + x;
+                let yi: usize = k + n - 1 - x;
+                let xj: usize = j + y;
+                let yj: usize = k + y;
+                c[xj][yi] = b[xi][yj];
+            }
+            if flag {
+                break;
+            }
+        }
+        if flag {
+            break;
+        }
+    }
+    b = c.clone();
 
     for i in 0..input.size {
         for j in 0..input.size {
@@ -159,5 +190,6 @@ pub fn vis(input: &Input, output: &Output, turn: usize) -> (i64, String, String)
                 .set("stroke-width", 3)
         );
     }
-    (score as i64, "".to_string(), doc.to_string())
+    let score = calculate_score(b);
+    (score as i64, err.to_string(), doc.to_string())
 }
