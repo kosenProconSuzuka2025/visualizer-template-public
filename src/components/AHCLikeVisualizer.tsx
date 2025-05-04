@@ -17,7 +17,7 @@ const AHCLikeVisualizer: FC = () => {
       seed: 0,
       turn: 0,
       maxTurn: 0,
-      problemId: 'A',
+      problemId: '',
     });
 
   const [visualizerResult, setVisualizerResult] = useState<VisualizerResult>({
@@ -27,12 +27,9 @@ const AHCLikeVisualizer: FC = () => {
   });
 
   useEffect(() => {
-    const inputText = gen(
-      visualizerSettingInfo.seed,
-      visualizerSettingInfo.problemId,
-    );
+    const inputText = gen(BigInt(visualizerSettingInfo.seed));
     setVisualizerSettingInfo((prev) => ({ ...prev, input: inputText }));
-  }, [visualizerSettingInfo.seed, visualizerSettingInfo.problemId]);
+  }, [visualizerSettingInfo.seed]);
 
   useEffect(() => {
     try {
